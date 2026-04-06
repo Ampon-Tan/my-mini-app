@@ -70,16 +70,35 @@
 
     // ฟังก์ชันแชร์ข้อความ (Share Target Picker)
     async function shareMe() {
-        const profile = await liff.getProfile();
+    try {
+        // 1. เช็คก่อนว่า LIFF พร้อมทำงานไหม
+        if (!liff.isLoggedIn()) {
+            liff.login();
+            return;
+        }
+
+        // 2. เช็คว่าเปิดสิทธิ์ shareTargetPicker ใน Console หรือยัง
         if (liff.isApiAvailable('shareTargetPicker')) {
-            await liff.shareTargetPicker([
+            const result = await liff.shareTargetPicker([
                 {
-                    type: "text",
-                    text: "นี่คือนามบัตรดิจิทัลของ " + profile.displayName + "\nลองเข้าไปดูได้ที่นี่ครับ!"
+                    "type": "text",
+                    "text": "ลองเล่นแอปใหม่ของผมดูครับ!"
                 }
             ]);
+            
+            if (result) {
+                console.log("แชร์สำเร็จ!");
+            } else {
+                console.log("User ยกเลิกการแชร์");
+            }
+        } else {
+            // ถ้าเด้ง Alert นี้ แปลว่าลืมติ๊ก Scopes ใน LINE Developers ครับ
+            alert("ฟีเจอร์แชร์ยังไม่ได้เปิดใช้งาน (Check Scopes in Console)");
         }
+    } catch (error) {
+        alert("เกิดข้อผิดพลาด: " + error.message);
     }
+}
 
     // ฟังก์ชันเปิด Link ภายนอก
     function openMap() {
