@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My First MINI App</title>
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <style>
+        body { font-family: sans-serif; text-align: center; padding-top: 50px; }
+        #profilePic { border-radius: 50%; width: 150px; display: none; margin: 20px auto; }
+        button { padding: 10px 20px; font-size: 16px; background: #00b900; color: white; border: none; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>ยินดีต้อนรับสู่ MINI App!</h1>
+    <img id="profilePic" src="" alt="Profile Picture">
+    <p id="greeting">กำลังโหลดข้อมูล...</p>
+    <button onclick="liff.closeWindow()">ปิดแอปนี้</button>
+
+    <script>
+        async function main() {
+            // 2. เริ่มต้นระบบ LIFF (เอา ID มาใส่ในขั้นตอนถัดไป)
+            await liff.init({ liffId: "ใส่_LIFF_ID_ของคุณตรงนี้" }); 
+
+            if (liff.isLoggedIn()) {
+                const profile = await liff.getProfile();
+                document.getElementById("greeting").innerText = "สวัสดีครับคุณ " + profile.displayName;
+                document.getElementById("profilePic").src = profile.pictureUrl;
+                document.getElementById("profilePic").style.display = "block";
+            } else {
+                liff.login();
+            }
+        }
+        main();
+    </script>
+</body>
+</html>
