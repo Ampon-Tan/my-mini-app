@@ -81,70 +81,69 @@
 
     // ฟังก์ชันแชร์ข้อความ (Share Target Picker)
     async function shareMe() {
-    try {
-        // 1. เช็คก่อนว่า LIFF พร้อมทำงานไหม
-        if (!liff.isLoggedIn()) {
-            liff.login();
-            return;
-        }
+        try {
+            if (!liff.isLoggedIn()) {
+                liff.login();
+                return;
+            }
 
-        // 2. เช็คว่าเปิดสิทธิ์ shareTargetPicker ใน Console หรือยัง
-        if (liff.isApiAvailable('shareTargetPicker')) {
-            const result = await liff.shareTargetPicker([
-    {
-        "type": "flex",
-        "altText": "คุณได้รับนามบัตรดิจิทัล",
-        "contents": {
-            "type": "bubble",
-            "hero": {
-                "type": "image",
-                "url": profile.pictureUrl, // รูปโปรไฟล์ของคุณ
-                "size": "full",
-                "aspectRatio": "20:13",
-                "aspectMode": "cover"
-            },
-            "body": {
-                "type": "box",
-                "layout": "vertical",
-                "contents": [
-                    { "type": "text", "text": profile.displayName, "weight": "bold", "size": "xl" },
-                    { "type": "text", "text": "LINE Mini App Developer", "size": "sm", "color": "#aaaaaa" }
-                ]
-            },
-            "footer": {
-                "type": "box",
-                "layout": "vertical",
-                "contents": [
+            // ต้องดึง profile ภายในฟังก์ชันนี้ด้วย เพื่อให้มีข้อมูลส่งไปใน Flex Message
+            const profile = await liff.getProfile();
+
+            if (liff.isApiAvailable('shareTargetPicker')) {
+                const result = await liff.shareTargetPicker([
                     {
-                        "type": "button",
-                        "action": {
-                            "type": "uri",
-                            "label": "ดูนามบัตรนี้",
-                            "uri": "https://liff.line.me/2009708940-XXXXXXXX" // ใส่ LIFF URL ของคุณ
-                        },
-                        "style": "primary",
-                        "color": "#06C755"
+                        "type": "flex",
+                        "altText": "คุณได้รับนามบัตรดิจิทัลของ " + profile.displayName,
+                        "contents": {
+                            "type": "bubble",
+                            "hero": {
+                                "type": "image",
+                                "url": profile.pictureUrl,
+                                "size": "full",
+                                "aspectRatio": "20:13",
+                                "aspectMode": "cover"
+                            },
+                            "body": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": [
+                                    { "type": "text", "text": profile.displayName, "weight": "bold", "size": "xl" },
+                                    { "type": "text", "text": "LINE Mini App Developer", "size": "sm", "color": "#aaaaaa" }
+                                ]
+                            },
+                            "footer": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": [
+                                    {
+                                        "type": "button",
+                                        "action": {
+                                            "type": "uri",
+                                            "label": "ดูนามบัตรนี้",
+                                            "uri": "https://liff.line.me/2009708940-7YELZAmO" // ใส่ LIFF URL เต็มของคุณ
+                                        },
+                                        "style": "primary",
+                                        "color": "#06C755"
+                                    }
+                                ]
+                            }
+                        }
                     }
-                ]
-            }
-        }
-    }
-]);
-            
-            if (result) {
-                console.log("แชร์สำเร็จ!");
+                ]);
+                
+                if (result) {
+                    console.log("แชร์สำเร็จ!");
+                } else {
+                    console.log("User ยกเลิกการแชร์");
+                }
             } else {
-                console.log("User ยกเลิกการแชร์");
+                alert("ฟีเจอร์แชร์ยังไม่ได้เปิดใช้งาน (Check Scopes in Console)");
             }
-        } else {
-            // ถ้าเด้ง Alert นี้ แปลว่าลืมติ๊ก Scopes ใน LINE Developers ครับ
-            alert("ฟีเจอร์แชร์ยังไม่ได้เปิดใช้งาน (Check Scopes in Console)");
+        } catch (error) {
+            alert("เกิดข้อผิดพลาด: " + error.message);
         }
-    } catch (error) {
-        alert("เกิดข้อผิดพลาด: " + error.message);
     }
-}
-
     // ฟังก์ชันเปิด Link ภายนอก
     function openMap() {
     liff.openWindow({
