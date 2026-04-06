@@ -91,11 +91,45 @@
         // 2. เช็คว่าเปิดสิทธิ์ shareTargetPicker ใน Console หรือยัง
         if (liff.isApiAvailable('shareTargetPicker')) {
             const result = await liff.shareTargetPicker([
-                {
-                    "type": "text",
-                    "text": "ลองเล่นแอปใหม่ของผมดูครับ!"
-                }
-            ]);
+    {
+        "type": "flex",
+        "altText": "คุณได้รับนามบัตรดิจิทัล",
+        "contents": {
+            "type": "bubble",
+            "hero": {
+                "type": "image",
+                "url": profile.pictureUrl, // รูปโปรไฟล์ของคุณ
+                "size": "full",
+                "aspectRatio": "20:13",
+                "aspectMode": "cover"
+            },
+            "body": {
+                "type": "box",
+                "layout": "vertical",
+                "contents": [
+                    { "type": "text", "text": profile.displayName, "weight": "bold", "size": "xl" },
+                    { "type": "text", "text": "LINE Mini App Developer", "size": "sm", "color": "#aaaaaa" }
+                ]
+            },
+            "footer": {
+                "type": "box",
+                "layout": "vertical",
+                "contents": [
+                    {
+                        "type": "button",
+                        "action": {
+                            "type": "uri",
+                            "label": "ดูนามบัตรนี้",
+                            "uri": "https://liff.line.me/2009708940-XXXXXXXX" // ใส่ LIFF URL ของคุณ
+                        },
+                        "style": "primary",
+                        "color": "#06C755"
+                    }
+                ]
+            }
+        }
+    }
+]);
             
             if (result) {
                 console.log("แชร์สำเร็จ!");
