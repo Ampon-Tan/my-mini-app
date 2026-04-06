@@ -53,18 +53,29 @@
 
 <script>
     async function main() {
-        // *** อย่าลืมเปลี่ยนเป็น LIFF ID ของคุณ ***
-        await liff.init({ liffId: "2009708940-xxxxx" }); 
+        try {
+            // ใส่ ID ของคุณให้ถูกต้อง
+            await liff.init({ liffId: "2009708940-xxxxx" }); 
 
-        if (!liff.isLoggedIn()) {
-            liff.login();
-        } else {
-            const profile = await liff.getProfile();
-            document.getElementById("userName").innerText = profile.displayName;
-            document.getElementById("profilePic").src = profile.pictureUrl;
-            if (profile.statusMessage) {
-                document.getElementById("userStatus").innerText = profile.statusMessage;
+            if (liff.isLoggedIn()) {
+                const profile = await liff.getProfile();
+                
+                // ตรวจสอบว่ามีข้อมูลส่งมาจริงไหมผ่าน console
+                console.log(profile);
+
+                document.getElementById("userName").innerText = profile.displayName;
+                document.getElementById("profilePic").src = profile.pictureUrl;
+                document.getElementById("profilePic").style.display = "block"; // มั่นใจว่าสั่งให้โชว์รูป
+                
+                if (profile.statusMessage) {
+                    document.getElementById("userStatus").innerText = profile.statusMessage;
+                }
+            } else {
+                liff.login();
             }
+        } catch (err) {
+            // ถ้ามี Error จะเด้งบอกทันที
+            alert("LIFF Error: " + err.message);
         }
     }
 
